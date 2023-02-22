@@ -6,7 +6,7 @@
 #include <ncurses.h>
 #include <time.h>
 #include <string.h>
-#define MAX_WORDS 27
+#define MAX_WORDS 209
 #define ENTER 10
 #define BACKSPACE 127
 #define MAIN_MENU 9

@@ -12,28 +12,28 @@ int main()
 
     while (play_again) {
         int i, j;
-        int castigator = 0;
-        int caracter, read;
+        int winner = 0;
+        int character, read;
         // folosite pentru a pozitiona cursorul in mijlocul blocurilor
         int yaxis = 5, xaxis = COLS / 2 - 11;
 
-        char cuvant[6], ch;
-        choose_word(cuvant);
+        char word[6], ch;
+        choose_word(word);
         initial_text();
         refresh();
 
         // generarea blocurilor din tabla de joc
-        WINDOW *cutii[6][5];
+        WINDOW *board[6][5];
         for (i = 0; i <= 5; i++) {
             for (j = 0; j <= 4; j++) {
-                cutii[i][j] = boardgame(i * 3, j * 5);
+                board[i][j] = boardgame(i * 3, j * 5);
             }
         }
 
         // retine numarul de incercari
         i = 0;
 
-        while (i < 6 && !castigator) {
+        while (i < 6 && !winner) {
             // retine daca cuvantul a fost introdus
             int check = 0;
 
@@ -48,9 +48,9 @@ int main()
                     move(yaxis + i * 3, xaxis + (j - 1) * 5);
                 }
 
-                // citeste caracterul de la tastatura
-                caracter = getch();
-                ch = (char) caracter;
+                // citeste characterul de la tastatura
+                character = getch();
+                ch = (char) character;
 
                 if (ch >= 'a' && ch <= 'z') {
                     // daca nu au fost introduse 5 litere
@@ -61,37 +61,37 @@ int main()
                         j--;
                     }
 
-                } else if (caracter == BACKSPACE) {
+                } else if (character == BACKSPACE) {
                     // daca cursorul nu se afla in blocul de pe prima pozitie
                     if (j > 0) {
                         j--;
-                        // printeaza ' ' in locul caracterului anterior
+                        // printeaza ' ' in locul characterului anterior
                         print_letter(' ', i * 3, j * 5);
                     }
                     j--;
 
-                } else if (caracter == ENTER) {
+                } else if (character == ENTER) {
                     // daca nu au fost introduse 5 litere
                     if (j < 5) {
                         warning1();
                         j--;
                     } else {
-                        // castigator retine daca cuvantul introdus este corect
-                        castigator = coloring(cutii[i], cuvant, i * 3 + 5);
+                        // castigator retine daca wordul introdus este corect
+                        winner = coloring(board[i], word, i * 3 + 5);
                         check = 1;
                     }
 
                 } else if (ch == ':' || ch == ';') {
                     read = 0;
-                    erase_gameboard(cutii);
+                    erase_gameboard(board);
 
                     // creeaza fereastra pentru meniul de control
                     WINDOW *menu = main_menu();
 
                     // cat timp nu se introduce 'r'/'R' sau 'e'/'E'
                     while (!read) {
-                        caracter = getch();
-                        ch = (char) caracter;
+                        character = getch();
+                        ch = (char) character;
 
                         if (ch == 'R' || ch == 'r') {
                             read = 1;
@@ -109,7 +109,7 @@ int main()
                     wrefresh(menu);
                     curs_set(1);
 
-                // daca se introduce orice alt caracter
+                // daca se introduce orice alt character
                 } else {
                     warning2();
                     j--;
@@ -119,17 +119,17 @@ int main()
             i++;
         }
 
-        if (castigator) {
+        if (winner) {
             read = 0;
-            erase_gameboard(cutii);
+            erase_gameboard(board);
 
             // creeaza fereastra pentru mesajul de castig
             WINDOW *winner = winner_message();
 
             // cat timp nu se introduce 'y'/'Y' sau 'n'/'N'
             while (!read) {
-                caracter = getch();
-                ch = (char) caracter;
+                character = getch();
+                ch = (char) character;
 
                 if (ch == 'Y' || ch == 'y') {
                     read = 1;
@@ -147,10 +147,10 @@ int main()
 
         // daca jucatorul nu a accesat meniul de control si nici nu a castigat
         } else if (i != MAIN_MENU) {
-            erase_gameboard(cutii);
+            erase_gameboard(board);
 
             // creeaza fereastra pentru mesajul de pierdere
-            WINDOW *loser = loser_message(cuvant);
+            WINDOW *loser = loser_message(word);
             play_again = 0;
             getch();
 
