@@ -7,5 +7,6 @@ wordle.o: wordle.c wordle.h
 	gcc -c wordle.c
 
 
+
 clean:
 	rm -f *.o wordle
