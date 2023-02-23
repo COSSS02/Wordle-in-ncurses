@@ -3,18 +3,17 @@
 int main()
 {
     int play_again = 1;
-    // initializarea ecranului
     initscr();
     noecho();
     start_color();
-    // declararea perechilor de culori
     declare_colors();
 
     while (play_again) {
         int i, j;
         int winner = 0;
         int character, read;
-        // folosite pentru a pozitiona cursorul in mijlocul blocurilor
+
+        // used to move the cursor in the middle of the windows
         int yaxis = 5, xaxis = COLS / 2 - 11;
 
         char word[6], ch;
@@ -22,7 +21,7 @@ int main()
         initial_text();
         refresh();
 
-        // generarea blocurilor din tabla de joc
+        // generates the game board
         WINDOW *board[6][5];
         for (i = 0; i <= 5; i++) {
             for (j = 0; j <= 4; j++) {
@@ -30,30 +29,30 @@ int main()
             }
         }
 
-        // retine numarul de incercari
+        // number of words introduced by the player
         i = 0;
 
         while (i < 6 && !winner) {
-            // retine daca cuvantul a fost introdus
+            // checks if the player has introduced a word
             int check = 0;
 
-            // memoreaza pozitia blocului unde trebuie sa se afle cursorul
+            // the window where the cursor is placed
             j = 0;
 
             while (!check) {
-                // muta cursorul in blocul potrivit
+                // moves the cursor in the corresponding window
                 if (j < 5) {
                     move(yaxis + i * 3, xaxis + j * 5);
                 } else {
                     move(yaxis + i * 3, xaxis + (j - 1) * 5);
                 }
 
-                // citeste characterul de la tastatura
+                // reads one character
                 character = getch();
                 ch = (char) character;
 
                 if (ch >= 'a' && ch <= 'z') {
-                    // daca nu au fost introduse 5 litere
+                    // if the player didn't write 5 letters
                     if (j < 5) {
                         print_letter(ch, i * 3, j * 5);
                     } else {
@@ -62,21 +61,21 @@ int main()
                     }
 
                 } else if (character == BACKSPACE) {
-                    // daca cursorul nu se afla in blocul de pe prima pozitie
+                    // if the cursor is not in the first window
                     if (j > 0) {
                         j--;
-                        // printeaza ' ' in locul characterului anterior
+                        // prints ' ' to delete the character
                         print_letter(' ', i * 3, j * 5);
                     }
                     j--;
 
                 } else if (character == ENTER) {
-                    // daca nu au fost introduse 5 litere
+                    // if 5 letters weren't introduced
                     if (j < 5) {
                         warning1();
                         j--;
                     } else {
-                        // castigator retine daca wordul introdus este corect
+                        // winner remembers if the word introduced is correct
                         winner = coloring(board[i], word, i * 3 + 5);
                         check = 1;
                     }
@@ -85,10 +84,9 @@ int main()
                     read = 0;
                     erase_gameboard(board);
 
-                    // creeaza fereastra pentru meniul de control
                     WINDOW *menu = main_menu();
 
-                    // cat timp nu se introduce 'r'/'R' sau 'e'/'E'
+                    // while the player is not pressing R or E
                     while (!read) {
                         character = getch();
                         ch = (char) character;
@@ -103,13 +101,12 @@ int main()
                     check = 1;
                     i = MAIN_MENU - 1;
 
-                    // sterge fereastra
+                    // deletes the main menu window
                     wbkgd(menu, COLOR_PAIR(1));
                     wclear(menu);
                     wrefresh(menu);
                     curs_set(1);
 
-                // daca se introduce orice alt character
                 } else {
                     warning2();
                     j--;
@@ -123,10 +120,9 @@ int main()
             read = 0;
             erase_gameboard(board);
 
-            // creeaza fereastra pentru mesajul de castig
             WINDOW *winner = winner_message();
 
-            // cat timp nu se introduce 'y'/'Y' sau 'n'/'N'
+            // while the player is not typing Y or N
             while (!read) {
                 character = getch();
                 ch = (char) character;
@@ -139,22 +135,21 @@ int main()
                 }
             }
 
-            // sterge fereastra
+            // deletes the winner window
             wbkgd(winner, COLOR_PAIR(1));
             wclear(winner);
             wrefresh(winner);
             curs_set(1);
 
-        // daca jucatorul nu a accesat meniul de control si nici nu a castigat
+            // if the player lost
         } else if (i != MAIN_MENU) {
             erase_gameboard(board);
 
-            // creeaza fereastra pentru mesajul de pierdere
             WINDOW *loser = loser_message(word);
             play_again = 0;
             getch();
 
-            // sterge fereastra
+            // deletes the loser window
             wbkgd(loser, COLOR_PAIR(1));
             wclear(loser);
             wrefresh(loser);
