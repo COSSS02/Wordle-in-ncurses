@@ -1,7 +1,6 @@
 #ifndef WORDLE_H
 #define WORDLE_H
 
-
 #include <ncurses.h>
 #include <time.h>
 #include <string.h>
@@ -35,6 +34,5 @@ WINDOW *winner_message();
 WINDOW *loser_message(char *cuvant);
 
 WINDOW *main_menu();
-
 
 #endif
